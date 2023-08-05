@@ -66,7 +66,6 @@ if(isset($_GET['logout'])) {
 <head>
 	<title><?php translate('Switchconfig'); ?> - <?php translate('Log In'); ?></title>
 	<?php require('head.inc.php'); ?>
-	<script language='javascript' type='text/javascript' src='js/explode.js'></script>
 	<style>
 	@media only screen and (max-width: 620px) {
 		#logincontainer {
@@ -93,7 +92,7 @@ if(isset($_GET['logout'])) {
 			<div id='subtitle'>
 				<div id='imgContainer'>
 					<img id='imgLoading' src='img/loading.svg'></img>
-					<img id='imgSwitch' src='img/switch.login.png' class='easteregg-trigger' onclick='boom()' title='initiate self destruction'></img>
+					<img id='imgSwitch' src='img/switch.login.png'></img>
 				</div>
 				<p class='first'>
 					<?php translate('This web application allows you to configure Cisco switches through a graphical interface.'); ?>

@@ -4,6 +4,7 @@
 <link rel='stylesheet' type='text/css' href='webdesign-template/css/font.css'>
 <link rel='stylesheet' type='text/css' href='webdesign-template/css/main.css'>
 <link rel='stylesheet' type='text/css' href='css/switchconfig.css'>
+<link rel='stylesheet' type='text/css' href='css/fork.css'>
 
 <?php
 if(file_exists(__DIR__.'/css/custom.css')) {

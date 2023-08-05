@@ -95,9 +95,6 @@ img[src='img/disabled.svg'] {
 	display: table-cell;
 	vertical-align: middle;
 }
-.easteregg-trigger {
-	cursor: url('../img/alert.png') 24 24, pointer;
-}
 .tip {
 	color: 				rgb(150,150,150);
 	position: 			absolute;
@@ -194,7 +191,7 @@ img[src='img/disabled.svg'] {
 }
 
 /* dark mode */
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: xdark) {
 	.demoStatusIcon > img {
 		background-color: rgba(60,60,60,1);
 	}

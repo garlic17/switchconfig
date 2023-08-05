@@ -34,10 +34,10 @@ if($cSwitch != null && $cSnippet != null) {
 				$info = translate('Port-Snippet cannot be executed because no port name was given', false).' ('.$cSnippet['name'].')';
 				$infoclass = 'error';
 			} else {
-				$cmd = str_replace('%PORT%', $port, $cSnippet['cmd']) . "\n" . 'exit' . "\n";
+				$cmd = str_replace('%PORT%', $port, $cSnippet['cmd']) . PHP_EOL . 'exit' . PHP_EOL;
 			}
 		} else {
-			$cmd = $cSnippet['cmd'] . "\n" . 'exit' . "\n";
+			$cmd = $cSnippet['cmd'] . PHP_EOL . 'exit' . PHP_EOL;
 		}
 		if(!empty($cmd)) {
 			$cmdResponse = executeRawShell($cSwitch['addr'], $cmd);

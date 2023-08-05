@@ -92,7 +92,6 @@ if($cSwitch != null) {
 <head>
 	<title><?php translate('Switchconfig'); ?></title>
 	<?php require('head.inc.php'); ?>
-	<script language='javascript' type='text/javascript' src='js/explode.js'></script>
 </head>
 <body>
 	<script>
@@ -132,10 +131,10 @@ if($cSwitch != null) {
 				<div id='imgContainer'>
 					<img id='imgLoading' src='img/loading.svg'></img>
 					<?php if($infoClass == 'ok') { ?>
-						<img id='imgSwitch' src='img/switch.png' class='easteregg-trigger delayIn' onclick='boom()' title='initiate self destruction'></img>
+						<img id='imgSwitch' src='img/switch.png' class='delayIn'></img>
 						<img id='imgTick' class='delayOut' src='img/tick_anim.svg'></img>
 					<?php } else { ?>
-						<img id='imgSwitch' src='img/switch.png' class='easteregg-trigger' onclick='boom()' title='initiate self destruction'></img>
+						<img id='imgSwitch' src='img/switch.png'></img>
 					<?php } ?>
 				</div>
 				<?php translate('This web application allows you to configure Cisco switches through a graphical interface.'); ?>
@@ -198,7 +197,7 @@ if($cSwitch != null) {
 									$icon = getStatusImgPath($interface['stat']);
 									$queried_port_found = true;
 								}
-								echo "<option value='" . $interface['port'] . "' $selected>" . $interface['port'] . "</option>\n";
+								echo "<option value='" . $interface['port'] . "' $selected>" . $interface['port'] . ' - ' . $interface['desc']. "</option>\n";
 							}
 						}
 						if($port != "" && $cSwitch != null && $queried_port_found == false) {
@@ -226,11 +225,11 @@ if($cSwitch != null) {
 					</span>
 				</div>
 			</form>
-
 			<form method='POST' name='setvaluesform' onsubmit='beginFadeOutAnimation();'>
 				<input type='hidden' name='action' value='SETVALUES'></input>
 				<input type='hidden' name='switch' value='<?php echo $cSwitch==null ? '' : $cSwitch['addr']; ?>'></input>
 				<input type='hidden' name='port' value='<?php echo $port; ?>'></input>
+<!--
 				<div class='multirow'>
 					<div class='form-row' style='flex-basis:66%'>
 						<select name='vlan' value='' id='vlan' class='hand' <?php if($cSwitch == null || $port == "") echo "disabled"; ?>>
@@ -262,7 +261,7 @@ if($cSwitch != null) {
 						</span>
 					</div>
 				</div>
-
+-->
 				<div class='form-row tooltip'>
 					<input type='text' name='description' id='description' maxlength='35' class='fullwidth' value='<?php echo $desc ?>' <?php if($cSwitch == null || $port == "") echo "disabled"; ?>></input>
 					<span class='tip'><label for='description'><?php translate('Description'); ?></label></span>

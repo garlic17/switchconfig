@@ -51,18 +51,19 @@ if(isset($_GET['refreshtableonly']) && $_GET['refreshtableonly'] == "1")
 		$status = getPortStatus($interfaces, $port);
 
 		// build text, title and onclick event
+		$title = "";
 		$statustext = "";
+		$htmlclass_additional = "";
 		$onclickevent = "";
 		if($status != "none") {
 			$statustext = translate($portInfo['stat'], false) . " [VLAN " . $portInfo['vlan'] . "]";
-			if($portInfo['voip'] != "none" && $portInfo['voip'] != "")
+			if(VOICE_VLAN > 0 && $portInfo['voip'] != "none" && $portInfo['voip'] != "")
 				$statustext .= " [VoIP " . explode(" ", $portInfo['voip'])[0] . "]";
 
 			$onclickevent = "onclick=\"beginFadeOutAnimation(); window.location.href='index.php?switch=".urlencode($sAddr)."&port=" . urlencode($port) . "'\"";
 
 			// set css class "error" if errors were reported
 			$title = translate("Packet Error Information (since last reboot):",false) . htmlspecialchars($portInfo['errt']);
-			$htmlclass_additional = "";
 			$errorinfo = "";
 			if($portInfo['errs'] == true) {
 				$nIoError ++;
@@ -75,7 +76,7 @@ if(isset($_GET['refreshtableonly']) && $_GET['refreshtableonly'] == "1")
 				$htmlclass_additional .= " trunk";
 			}
 			// set css class "voice" if port has set a voice vlan
-			if($portInfo['voip'] != "none" && $portInfo['voip'] != "") {
+			if(VOICE_VLAN > 0 && $portInfo['voip'] != "none" && $portInfo['voip'] != "") {
 				$htmlclass_additional .= " voip";
 				$nVoipEnabled ++;
 			}
@@ -85,9 +86,8 @@ if(isset($_GET['refreshtableonly']) && $_GET['refreshtableonly'] == "1")
 		echo "<td class='$status tooltip $htmlclass_additional' title='$title' $onclickevent>\n";
 		if($statustext != "") {
 			echo "<span class='tooltiptext'>" .
-			     "<div><b>" . $port . "</b></div>" .
+			     "<div><b>" . $port . ' - ' . htmlspecialchars($portInfo['desc']) . "</b></div>" .
 			     "<div>" . $statustext . "</div>" .
-			     "<div>" . htmlspecialchars($portInfo['desc']) . "</div>" .
 			     "<div>" . $errorinfo . "</div>" .
 			     "</span>\n";
 		}
@@ -155,15 +155,18 @@ if(isset($_GET['refreshtableonly']) && $_GET['refreshtableonly'] == "1")
 					<table id='matrix' class='matrix'>
 <?php } ?>
 
-						<?php ##### for small 10-port switches #####
-						if(getPortStatus($interfaces, "Gi0/1") != "none") {
-							require('php/intmatrix-layouts/10port.php');
-						}
-						?>
-
-						<?php ##### for regular nexus switches (up to 3 stacked) #####
-						if(getPortStatus($interfaces, "Gi1/0/1") != "none") {
+						<?php
+						##### for regular switches (up to 3 stacked) #####
+						if(getPortStatus($interfaces, "Gi1/0/48") != "none") {
 							require('php/intmatrix-layouts/48port.php');
+						}
+						##### for regular nexus switches (up to 3 stacked) #####
+						elseif(getPortStatus($interfaces, "Gi1/0/24") != "none") {
+							require('php/intmatrix-layouts/24port.php');
+						}
+						##### for small 10-port switches #####
+						elseif(getPortStatus($interfaces, "Gi0/1") != "none") {
+							require('php/intmatrix-layouts/10port.php');
 						}
 						?>
 
@@ -173,24 +176,24 @@ if(isset($_GET['refreshtableonly']) && $_GET['refreshtableonly'] == "1")
 							<td class='connected'></td>
 							<td colspan='5'><?php translate('Connected'); ?>&nbsp;[<?php echo $nConnected; ?>]</td>
 							<td>&nbsp;</td>
-							<td class='notconnect voip'></td>
-							<td colspan='5'><?php translate('VoIP enabled'); ?>&nbsp;[<?php echo $nVoipEnabled; ?>]</td>
-							<td>&nbsp;</td>
 							<td class='notconnect'></td>
 							<td colspan='5'><?php translate('Not Connected'); ?>&nbsp;[<?php echo $nNotconnected; ?>]</td>
+							<td>&nbsp;</td>
+							<td class='other'></td>
+							<td colspan='5'><?php translate('Disabled'); ?>&nbsp;[<?php echo $nDisabled; ?>]</td>
 							<td>&nbsp;</td>
 							<td class='notconnect error-static'></td>
 							<td colspan='5'><?php translate('I/O Error'); ?>&nbsp;[<?php echo $nIoError; ?>]</td>
 						</tr>
-						<tr class='legende'>
-							<td class='other'></td>
-							<td colspan='5'><?php translate('Disabled'); ?>&nbsp;[<?php echo $nDisabled; ?>]</td>
-							<td>&nbsp;</td>
+						<tr class='legende' style="display: none;">
 							<td class='connected trunk'></td>
 							<td colspan='5'><?php translate('Trunk connected'); ?></td>
 							<td>&nbsp;</td>
 							<td class='notconnect trunk'></td>
 							<td colspan='5'><?php translate('Trunk not connected'); ?></td>
+							<td>&nbsp;</td>
+							<td class='notconnect voip'></td>
+							<td colspan='5'><?php translate('VoIP enabled'); ?>&nbsp;[<?php echo $nVoipEnabled; ?>]</td>
 						</tr>
 <?php if(!$refreshtableonly) { ?>
 					</table>

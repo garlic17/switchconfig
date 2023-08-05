@@ -21,18 +21,18 @@ function getAllPortsOnSwitch($switch, $fullinfo = true, $voiceinfo = false) {
 
 	// second command
 	if($fullinfo == true) { // time-intensive... use only if really necessary
-		$connection2 = ssh2_connect($switch, 22);
-		ssh2_auth_password($connection2, $_SESSION['username'], $_SESSION['password']);
-		$stream_detail = ssh2_exec($connection2, 'sh int');
+		$connection = ssh2_connect($switch, 22);
+		ssh2_auth_password($connection, $_SESSION['username'], $_SESSION['password']);
+		$stream_detail = ssh2_exec($connection, 'sh int');
 		stream_set_blocking($stream_detail, true);
 		$sh_int_detail = @stream_get_contents($stream_detail);
 		fclose($stream_detail);
 	}
 	// third command
 	if($voiceinfo == true) { // time-intensive... use only if really necessary
-		$connection3 = ssh2_connect($switch, 22);
-		ssh2_auth_password($connection3, $_SESSION['username'], $_SESSION['password']);
-		$stream_switchport = ssh2_exec($connection3, 'sh int switchport');
+		$connection = ssh2_connect($switch, 22);
+		ssh2_auth_password($connection, $_SESSION['username'], $_SESSION['password']);
+		$stream_switchport = ssh2_exec($connection, 'sh int switchport');
 		stream_set_blocking($stream_switchport, true);
 		$sh_int_switchport = @stream_get_contents($stream_switchport);
 		fclose($stream_switchport);
@@ -141,39 +141,48 @@ function setValues($switch, $switchport, $vlan, $desc, $voip) {
 	$stdio_stream = ssh2_shell($connection);
 
 	// if description is blank, send command "no description"
-	if($desc == "") $desc_cmd = "no description";
-	else $desc_cmd = "description $desc";
-
-	// create voip command
-	if(VOICE_VLAN == -1) $voip_cmd = "";
-	elseif($voip == "enabled")
-		$voip_cmd = "switchport voice vlan " . VOICE_VLAN . "\n" .
-		            (DO_SET_POE ? "power inline auto" : "");
-	else
-		$voip_cmd = "no switchport voice vlan" . "\n" .
-		            (DO_SET_POE ? "power inline never" : "");
-
-	if($vlan == "disabled") {
-		// disable port
-		fwrite($stdio_stream, "conf t" . "\n" .
-							  "int $switchport" . "\n" .
-							  "shutdown" . "\n" .
-							  $voip_cmd . "\n" .
-							  $desc_cmd . "\n" .
-							  "end" . "\n" .
-							  (DO_WR_MEM ? "wr mem" : "") . "\n" .
-							  "exit" . "\n");
-	} else {
-		fwrite($stdio_stream, "conf t" . "\n" .
-							  "int $switchport" . "\n" .
-							  "no shutdown" . "\n" .
-							  "switchport access vlan $vlan" . "\n" .
-							  $voip_cmd . "\n" .
-							  $desc_cmd . "\n" .
-							  "end" . "\n" .
-							  (DO_WR_MEM ? "wr mem" : "") . "\n" .
-							  "exit" . "\n");
+	if($desc == "") {
+		$desc_cmd = "no description";
 	}
+	else {
+		$desc_cmd = "description $desc";
+	}
+
+	$voip_cmd = "";
+	if ($voip && VOICE_VLAN > 0)
+	{
+		// create voip command
+		if($voip == "enabled") {
+			$voip_cmd = "switchport voice vlan " . VOICE_VLAN . PHP_EOL .
+						(DO_SET_POE ? "power inline auto" : "");
+		}
+		else {
+			$voip_cmd = "no switchport voice vlan" . PHP_EOL .
+						(DO_SET_POE ? "power inline never" : "");
+		}
+	}
+
+	$vlan_cmd = "";
+	if ($vlan)
+	{
+		if($vlan == "disabled") {
+			// disable port
+			$vlan_cmd = "shutdown";
+		} else {
+			$vlan_cmd = "no shutdown" . PHP_EOL .
+			            "switchport access vlan $vlan";
+		}
+	}
+
+	fwrite($stdio_stream,
+		"conf t" . PHP_EOL .
+		"int $switchport" . PHP_EOL .
+		$voip_cmd . PHP_EOL .
+		$desc_cmd . PHP_EOL .
+		$vlan_cmd . PHP_EOL .
+		"end" . PHP_EOL .
+		(DO_WR_MEM ? "wr mem" : "") . PHP_EOL .
+		"exit" . PHP_EOL);
 
 	stream_set_blocking($stdio_stream, true); // wait until command executed
 	return stream_get_contents($stdio_stream);

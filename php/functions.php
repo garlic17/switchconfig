@@ -51,9 +51,12 @@ function str_chop_lines($str, $lines = 3) {
 }
 
 function getStatusImgPath($status) {
-	if($status == 'connected') return 'img/connected.svg';
-	elseif($status == 'notconnect') return 'img/notconnected.svg';
-	else return 'img/disabled.svg';
+	if($status == 'connected')
+		return 'img/connected.svg';
+	elseif($status == 'notconnect')
+		return 'img/notconnected.svg';
+	else
+		return 'img/disabled.svg';
 }
 
 function formatMac($input) {

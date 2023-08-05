@@ -1,0 +1,19 @@
+#title {
+    display: none;
+}
+
+#_footer {
+    display: none;
+}
+
+#splash {
+    padding: 10px 60px;
+}
+
+.slubbutton {
+	text-transform: none;
+}
+
+img[src='img/disabled.svg'] {
+	animation: none;
+}

@@ -4,7 +4,7 @@
 		<?php if(isset($MAINCTRLS) == false || (isset($MAINCTRLS) == true && $MAINCTRLS == true)) { ?>
 		<div style='float: left;'>
 			<a href='index.php' class='slubbutton secondary' id='mainmanubtn' title='<?php translate('Back to Start Page'); ?>'><?php translate('Start'); ?></a>
-			<a href='maps.php' class='slubbutton secondary' id='mapsbtn'><?php translate('Maps'); ?></a>
+			<!-- <a href='maps.php' class='slubbutton secondary' id='mapsbtn'><?php translate('Maps'); ?></a> -->
 		</div>
 		<?php } ?>
 		<?php if(!empty($ZOOM)) { ?>

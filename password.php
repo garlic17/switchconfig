@@ -75,12 +75,11 @@ if(isset($_POST['newpw']) && isset($_POST['newpw2'])) {
 							$stdio_stream = ssh2_shell($connection);
 							if($stdio_stream !== false) {
 
-								fwrite($stdio_stream, "conf t" . "\n" .
-								                      "username " . $_POST['username'] . " password 0 " . $_POST['newpw'] . "\n" .
-								                      "end" . "\n" .
-								                      "wr mem" . "\n" .
-								                      "exit" . "\n");
-								$cmd_output .= "\n" . stream_get_contents($stdio_stream);
+								fwrite($stdio_stream, "conf t" . PHP_EOL .
+								                      "username " . $_POST['username'] . " secret 0 " . $_POST['newpw'] . PHP_EOL .
+								                      "end" . PHP_EOL .
+								                      "exit" . PHP_EOL);
+								$cmd_output .= PHP_EOL . stream_get_contents($stdio_stream);
 								echo "<span class='changeok'>OK</span><br>"; flush(); ob_flush();
 
 							} else {
@@ -147,7 +146,7 @@ if(isset($_POST['newpw']) && isset($_POST['newpw2'])) {
 
 	<span style='display: none'>
 		SWITCH-CONFIG OUTPUT:
-		<?php echo $cmd_output . "\n" ?>
+		<?php echo $cmd_output . PHP_EOL ?>
 	</span>
 
 <?php require('menu.inc.php'); ?>

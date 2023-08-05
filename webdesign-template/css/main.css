@@ -47,7 +47,7 @@ body {
 	object-position: 	-99999px 99999px;
 	width: 				250px;
 	height: 			71px;
-	background-image: 	url('../img/logo.svg');
+	/* background-image: 	url('../img/logo.svg'); */
 }
 #title {
 	display: 			flex;
@@ -654,7 +654,7 @@ table.styled.alternating tr:nth-child(even) td {
 }
 
 /* Dark Mode */
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: xdark) {
 	body {
 		color: white;
 		background-color: black;
